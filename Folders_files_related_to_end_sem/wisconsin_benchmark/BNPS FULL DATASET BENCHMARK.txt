@@ -1,0 +1,75 @@
+============================================================
+BNPS FULL-DATASET BENCHMARK  —  Bitbrains
+  BNPS membranes : [25, 150]
+  MLP epochs     : 200 on ALL training samples
+  Timing runs    : 20
+============================================================
+Mon May 11 11:54:27 2026       
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.126.09             Driver Version: 580.126.09     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|                                         |                        |               MIG M. |
+|=========================================+========================+======================|
+|   0  NVIDIA T400 4GB                Off |   00000000:65:00.0  On |                  N/A |
+| 38%   39C    P8            N/A  /   31W |    1575MiB /   4096MiB |      0%      Default |
+|                                         |                        |                  N/A |
++-----------------------------------------+------------------------+----------------------+
+
++-----------------------------------------------------------------------------------------+
+| Processes:                                                                              |
+|  GPU   GI   CI              PID   Type   Process name                        GPU Memory |
+|        ID   ID                                                               Usage      |
+|=========================================================================================|
+|    0   N/A  N/A            4421      G   /usr/lib/xorg/Xorg                      348MiB |
+|    0   N/A  N/A            4668      G   /usr/bin/gnome-shell                    272MiB |
+|    0   N/A  N/A            5295      G   ...exec/xdg-desktop-portal-gnome        411MiB |
+|    0   N/A  N/A          597625      G   /opt/google/chrome/chrome                25MiB |
+|    0   N/A  N/A          597676      G   ...0507-170049.830000-production        234MiB |
+|    0   N/A  N/A         1464600      G   /usr/bin/nautilus                       242MiB |
++-----------------------------------------------------------------------------------------+
+Dataset loaded: 1250 files from ./bitbrains_data
+PAA-compressed: 118,433 timesteps from 25 VMs
+Train=94,637  Test=23,671  Features=5
+[sklearn LR full data] MAE=0.0420 RMSE=0.0812 R2=0.6816
+Device: cuda
+MLP subset: 2,000 K-Means representatives from 94,637 samples
+MLP warm-up done. Training 200 epochs on 94,637 samples...
+  Run 1/3 time: 3710.7ms
+  Run 2/3 time: 3734.7ms
+  Run 3/3 time: 3709.0ms
+[MLP Full Data] 3710.7ms (std=11.7) MAE=0.0323 RMSE=0.0698 R2=0.7644
+Not in Colab — assuming bnps3.py and bnps_fast.cu are in CWD
+CUDA compiled OK (bnps_fast.cu)
+bnps3.py startup overhead: 46.4ms
+
+── BNPS 25 membranes ──
+  CUDA: 26.6ms  Speedup vs full-data MLP: 139.50x
+  MAE=0.0792  RMSE=0.1642  R2=-0.3032
+
+── BNPS 150 membranes ──
+  CUDA: 104.9ms  Speedup vs full-data MLP: 35.38x
+  MAE=0.0792  RMSE=0.1642  R2=-0.3032
+
+======================================================================
+  FINAL RESULTS — BNPS vs Full-Data PyTorch MLP (Bitbrains)
+======================================================================
+  Method                                  Train(ms)      MAE     RMSE       R2   Speedup
+  -----------------------------------------------------------------------------------
+  PT Deep MLP (Full 94637 samples, 200ep)     3710.7   0.0323   0.0698   0.7644  baseline
+  BNPS CUDA SLP (25 membranes, 300 steps)       26.6   0.0792   0.1642  -0.3032   139.50x
+  BNPS CUDA SLP (150 membranes, 300 steps)      104.9   0.0792   0.1642  -0.3032    35.38x
+
+  Inference on 23,671 test samples:
+  MLP  : 1.8140ms
+  BNPS : 0.1308ms  (13.9x faster)
+======================================================================
+Saved: cloud_timing.png
+Saved: cloud_efficiency_frontier.png
+Saved: cloud_inference.png
+
+Done! Copy the numbers above into the report.
+Then replace cloud_timing.png, cloud_efficiency_frontier.png, cloud_inference.png
+in the Chapter4 figures folder with the newly generated files.
+
